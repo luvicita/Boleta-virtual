@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BoletaSegura.pe</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background-color: #ffffff;
+      color: #1d3557;
+      transition: all 0.3s ease-in-out;
+    }
+    header {
+      background-color: #1d3557;
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      animation: slideDown 1s ease-out;
+    }
+    nav a {
+      margin: 0 1rem;
+      color: white;
+      text-decoration: none;
+    }
+    .hero {
+      text-align: center;
+      padding: 4rem 2rem;
+      background: linear-gradient(135deg, #e0f7fa, #ffffff);
+      animation: fadeIn 2s ease-in;
+    }
+    .hero button {
+      padding: 0.75rem 2rem;
+      background-color: #1d3557;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+    .hero button:hover {
+      background-color: #457b9d;
+    }
+    section {
+      padding: 2rem;
+    }
+    h2 {
+      text-align: center;
+      color: #1d3557;
+    }
+    .card {
+      background: #f1f9ff;
+      padding: 1.5rem;
+      border-radius: 12px;
+      margin: 1rem auto;
+      max-width: 600px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      animation: fadeInUp 1s ease-in-out;
+    }
+    input, select, button {
+      display: block;
+      padding: 0.75rem;
+      margin: 0.5rem auto;
+      width: 90%;
+      max-width: 400px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+    button {
+      background-color: #1d3557;
+      color: white;
+    }
+    footer {
+      background-color: #1d3557;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      margin-top: 2rem;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes slideDown {
+      from { transform: translateY(-100%); }
+      to { transform: translateY(0); }
+    }
+    @keyframes fadeInUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div><strong>BoletaSegura.pe</strong></div>
+    <nav>
+      <a href="#verificador">Verificar</a>
+      <a href="#registro">Subir Boleta</a>
+      <a href="#usuarios">Registrarse</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h1>Boletas virtuales 100% seguras</h1>
+    <p>Verifica tus compras y registra tus ventas fácilmente</p>
+    <button onclick="document.getElementById('verificador').scrollIntoView()">Verificar ahora</button>
+  </section>
+
+  <section id="usuarios">
+    <h2>Registro de Usuarios</h2>
+    <div class="card">
+      <select id="tipoUsuario">
+        <option value="comprador">Comprador</option>
+        <option value="negocio">Negocio</option>
+      </select>
+      <input type="text" id="nombreUsuario" placeholder="Nombre o razón social" required>
+      <input type="email" id="correoUsuario" placeholder="Correo electrónico" required>
+      <button onclick="registrarUsuario()">Registrarse</button>
+      <p id="mensajeRegistro"></p>
+    </div>
+  </section>
+
+  <section id="registro">
+    <h2>Subir Boleta</h2>
+    <div class="card">
+      <input type="text" id="codigoBoleta" placeholder="Código de boleta">
+      <input type="text" id="nombreTienda" placeholder="Nombre del negocio">
+      <input type="number" id="monto" placeholder="Monto (S/.)">
+      <input type="date" id="fecha" placeholder="Fecha">
+      <button onclick="subirBoleta()">Registrar boleta</button>
+      <p id="mensajeBoleta"></p>
+    </div>
+  </section>
+
+  <section id="verificador">
+    <h2>Verificador</h2>
+    <div class="card">
+      <input type="text" id="verificarCodigo" placeholder="Ingresa el código de boleta">
+      <button onclick="verificar()">Verificar</button>
+      <p id="resultadoVerificacion"></p>
+    </div>
+  </section>
+
+  <footer>
+    &copy; 2025 BoletaSegura.pe | Proyecto digital para autenticación de compras
+  </footer>
+
+  <script>
+    const boletas = {};
+    const usuarios = [];
+
+    function registrarUsuario() {
+      const tipo = document.getElementById('tipoUsuario').value;
+      const nombre = document.getElementById('nombreUsuario').value.trim();
+      const correo = document.getElementById('correoUsuario').value.trim();
+      const mensaje = document.getElementById('mensajeRegistro');
+
+      if (!nombre || !correo) {
+        mensaje.textContent = 'Por favor completa todos los campos.';
+        mensaje.style.color = 'orange';
+        return;
+      }
+
+      usuarios.push({ tipo, nombre, correo });
+      mensaje.textContent = `✅ ${tipo === 'negocio' ? 'Negocio' : 'Comprador'} registrado correctamente.`;
+      mensaje.style.color = 'green';
+    }
+
+    function subirBoleta() {
+      const codigo = document.getElementById('codigoBoleta').value.trim().toUpperCase();
+      const tienda = document.getElementById('nombreTienda').value.trim();
+      const monto = document.getElementById('monto').value;
+      const fecha = document.getElementById('fecha').value;
+      const mensaje = document.getElementById('mensajeBoleta');
+
+      if (!codigo || !tienda || !monto || !fecha) {
+        mensaje.textContent = 'Todos los campos son obligatorios.';
+        mensaje.style.color = 'orange';
+        return;
+      }
+
+      boletas[codigo] = { tienda, monto, fecha };
+      mensaje.textContent = '✅ Boleta registrada correctamente.';
+      mensaje.style.color = 'green';
+    }
+
+    function verificar() {
+      const codigo = document.getElementById('verificarCodigo').value.trim().toUpperCase();
+      const resultado = document.getElementById('resultadoVerificacion');
+
+      if (!codigo) {
+        resultado.textContent = 'Por favor ingresa un código.';
+        resultado.style.color = 'orange';
+        return;
+      }
+
+      const boleta = boletas[codigo];
+      if (boleta) {
+        resultado.textContent = `✅ Boleta válida: Compra en ${boleta.tienda} por S/ ${boleta.monto} el ${boleta.fecha}.`;
+        resultado.style.color = 'green';
+      } else {
+        resultado.textContent = '❌ Boleta no registrada.';
+        resultado.style.color = 'red';
+      }
+    }
+  </script>
+</body>
+</html>
